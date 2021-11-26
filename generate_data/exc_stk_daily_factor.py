@@ -104,7 +104,7 @@ class stkfactor_exc():
         stk_daily_factor_['selectdt'] = stk_daily_factor_['tradedt'].apply(lambda x : self.sel_dt[self.sel_dt > '%s'%x][-1])
         ''' 如果有nan值 则用该股票的前一个数据补齐 '''
         stk_daily_factor_ = stk_daily_factor_.groupby('stockcode', as_index=False).apply(pd.DataFrame.fillna, method = 'pad')
-        ''' 每一个基金在每一个selectdt 选取小于该selectdt 的最后一个交易日 '''
+        ''' 在每一个selectdt 选取股票小于该selectdt 的最后一个交易日的因子值 '''
         stk_factor = stk_daily_factor_.sort_values('tradedt').groupby(['stockcode','selectdt']).tail(1)
         return stk_factor
 

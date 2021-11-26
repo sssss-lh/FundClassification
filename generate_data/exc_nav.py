@@ -33,6 +33,9 @@ class nav_exc():
         fundret = self.fundnav[['fundcode','tradedt','selectdt','ret']]
 
         self.indexs['selectdt'] = self.indexs['tradedt'].apply(lambda x : self.sel_dt[self.sel_dt > '%s'%x][-1])
+        self.indexs['mkt'] = self.indexs['mkt']/self.indexs['mkt'].iloc[0]
+        self.indexs['smb'] = self.indexs['sml']/self.indexs['big'] #smb
+        self.indexs['hml'] = self.indexs['val']/self.indexs['grw'] #hml
         self.indexs['mkt_ret'] = self.indexs.mkt.pct_change()
         self.indexs['smb_ret'] = self.indexs.smb.pct_change()
         self.indexs['hml_ret'] = self.indexs.hml.pct_change()

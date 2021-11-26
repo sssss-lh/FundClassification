@@ -6,7 +6,6 @@
 - 基金归类到相关系数最大的一类，在大盘、小盘池中取市值中位数作为市值阈值big_thr，sml_thr，成长、价值池中取g-v中位数作为g-v阈值grw_thr，val_thr
 - 分类方式1：取big_thr和sml_thr的平均值mid_thr，作为中盘聚类点，取grw_thr和val_thr的平均值bal_thr，作为均衡聚类点，构建9个聚类中心，用knn（k=1）聚类
 - 分类方式2：简单取big_thr，sml_thr， grw_thr，val_thr作为划分的阈值
-- 每一个selectdt，在每个类别中选取”隐形交易能力”因子值最小的4只基金作为下一期
 
 ## 文件夹
 
@@ -36,13 +35,13 @@ stkdailyfactor.pkl
 
 styleindex.pkl
 
-
-
 ### generate_data文件夹：
 
 generate_data.py文件用于处理raw_data里的数据，运行generate_data.py之后将运行所有用于处理数据的.py文件
 
-exc_stk_daily_factor.py 定义了处理股票因子的类：
+**exc_stk_daily_factor.py** 定义了处理股票因子的类。
+
+输入每日股票原始因子，返回计算好的每个季度的股票因子值
 
 ```python
 class stkfactor_exc():
@@ -51,33 +50,53 @@ class stkfactor_exc():
 
  处理每日的股票因子，对每个因子进行MAD和z_score处理，并计算成长和价值因子，变成每个季度的股票因子
 
-exc_fund_port.py 处理基金每个季度的持仓
+**exc_fund_port.py** 处理基金每个季度的持仓
+
+将计算好归一化的股票仓位，以及基金股票仓位披露比例
+
+```python
+class fundport_exc():
+    def __init__(self, fund_portf:pd.DataFrame) -> None:
+```
+
+**exc_nav.py** 处理基金净值和市场的指数收益率
+
+
+
+```python
+class nav_exc():
+    def __init__(self, fundnav:pd.DataFrame, indexs:pd.DataFrame, is_raw:bool = True) -> None:
+```
+
+**excuters.py** 和 **utils.py**定义了部分函数，及用于导入自定义包
 
 ### data文件夹：
 
-在运行generate_data.py之后，将处理好的文件生成到该目录，处理好的文件如下：
+在运行**generate_data.py**之后，处理好的文件将生成到该目录，处理好的文件如下：
 
-seasn_dts_df.pkl 记录了每个季度的季度日期
+corr_tbl.pkl 记录了基金与四个巨潮指数的相关性列表，以及相比上一期变化的幅度
 
-stkfactor_f.pkl 记录了每个季度股票的因子值
+ff3_indexs.pkl 记录了Fama-French 三因子的指数值
 
-fund_portf_.pkl 记录了修改后的基金持仓信息
+fund_factor.pkl 记录了每个时间节点的基金因子值
 
-corr_tbl.pkl 记录了基金与四个巨潮指数的相关性列表
+fund_portf.pkl 记录了每个时间节点的基金的持仓信息
 
-ret_tbl.pkl 记录了每个季度每只基金的季末后30天的真实收益率和模拟收益率，以及两个收益率的排名差
+fundnav.pkl 记录了公募基金的净值走势
 
-fundret_.pkl 记录了每只基金所有交易日的收益率
+fundret.pkl 记录了公募基金的收益率情况
 
-**已经存放的文件：**
+hs300.xlsx 记录了沪深300的走势
 
-CHINAMUTUALFUNDSECTOR.pkl
+reg4_indexs.pkl 记录了四个回归指数的走势情况
 
-ASHAREINDUSTRIESCODE.pkl
+seasn_dts_df.pkl 记录了所有seasndt
 
-CHINAMUTUALFUNDDESCRIPTION.pkl
+stkfactor.pkl 记录了股票未做规格化之前的因子值
 
-### result/result文件夹：
+stkfactor_f.pkl 记录了股票进行规格化之后的因子值
+
+### result/style_classification文件夹：
 
 记录所生成的所有结果
 
@@ -101,11 +120,11 @@ class fund_classifier():
 
 **style_classification_example.py** 给出了使用classifier类对基金进行分类的一个例子，并保存了基金分类结果。
 
+**show_result.py**对研报部分中间数据进行了计算。
+
 ## 运行代码
 
 - 运行generate_data/generate_data.py
 - 运行style_classification/style_classification_example.py，对基金进行分类
 - 分段运行style_classification/show_result.py，查看研报中间数据的生成
-
-问题 20191231 有的是在3.31之后才公布
 
