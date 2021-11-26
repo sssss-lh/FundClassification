@@ -128,3 +128,4 @@ class fund_classifier():
 - 运行style_classification/style_classification_example.py，对基金进行分类
 - 分段运行style_classification/show_result.py，查看研报中间数据的生成
 
+由于数据过大，所以没有放在仓库里
